@@ -1,0 +1,1522 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.9 (Ubuntu 10.9-0ubuntu0.18.04.1)
+-- Dumped by pg_dump version 10.9 (Ubuntu 10.9-0ubuntu0.18.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: ap; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ap (
+    id integer NOT NULL,
+    macaddress text NOT NULL,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    ip text,
+    name text,
+    apgroup text,
+    model text,
+    mode integer,
+    reboots integer,
+    rebootstraps integer,
+    server_id integer
+);
+
+
+ALTER TABLE public.ap OWNER TO postgres;
+
+--
+-- Name: ap_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.ap_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ap_id_seq OWNER TO postgres;
+
+--
+-- Name: ap_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.ap_id_seq OWNED BY public.ap.id;
+
+
+--
+-- Name: building; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.building (
+    id integer NOT NULL,
+    name text NOT NULL,
+    idfromawms text NOT NULL,
+    campus_id integer,
+    aletimestamp timestamp with time zone,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.building OWNER TO postgres;
+
+--
+-- Name: building_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.building_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.building_id_seq OWNER TO postgres;
+
+--
+-- Name: building_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.building_id_seq OWNED BY public.building.id;
+
+
+--
+-- Name: campus; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.campus (
+    id integer NOT NULL,
+    name text NOT NULL,
+    idfromawms text NOT NULL,
+    aletimestamp timestamp with time zone,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    server_id integer,
+    timezone text
+);
+
+
+ALTER TABLE public.campus OWNER TO postgres;
+
+--
+-- Name: campus_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.campus_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.campus_id_seq OWNER TO postgres;
+
+--
+-- Name: campus_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.campus_id_seq OWNED BY public.campus.id;
+
+
+--
+-- Name: endpoint; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.endpoint (
+    id integer NOT NULL,
+    macaddress text NOT NULL,
+    isassociated boolean,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    lastheardtime timestamp with time zone,
+    lastheardmessage text,
+    receivenotification boolean DEFAULT false,
+    appinstalled boolean,
+    lastnotificationattempted timestamp with time zone,
+    lastnotificationstatus integer,
+    maxrssi integer,
+    username text,
+    role text,
+    bssid text,
+    devtype text,
+    rtlstype integer,
+    ip text,
+    maxdbm integer,
+    lastchannel integer,
+    lastnoisefloor integer,
+    lastage integer,
+    lastradiobssid text,
+    lastmonbssid text
+);
+
+
+ALTER TABLE public.endpoint OWNER TO postgres;
+
+--
+-- Name: endpoint_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.endpoint_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.endpoint_id_seq OWNER TO postgres;
+
+--
+-- Name: endpoint_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.endpoint_id_seq OWNED BY public.endpoint.id;
+
+
+--
+-- Name: endpoint_person; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.endpoint_person (
+    id integer NOT NULL,
+    endpoint_id integer,
+    person_id integer,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.endpoint_person OWNER TO postgres;
+
+--
+-- Name: endpoint_person_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.endpoint_person_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.endpoint_person_id_seq OWNER TO postgres;
+
+--
+-- Name: endpoint_person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.endpoint_person_id_seq OWNED BY public.endpoint_person.id;
+
+
+--
+-- Name: floor; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.floor (
+    id integer NOT NULL,
+    name text NOT NULL,
+    idfromawms text NOT NULL,
+    latitude real,
+    longitude real,
+    img_path text,
+    img_width real,
+    img_length real,
+    building_id integer,
+    level real,
+    units text,
+    grid_size real,
+    aletimestamp timestamp with time zone,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.floor OWNER TO postgres;
+
+--
+-- Name: floor_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.floor_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.floor_id_seq OWNER TO postgres;
+
+--
+-- Name: floor_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.floor_id_seq OWNED BY public.floor.id;
+
+
+--
+-- Name: geofence_notify; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.geofence_notify (
+    id integer NOT NULL,
+    endpoint_id integer,
+    servertimestamp timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    aletimestamp timestamp with time zone,
+    geofencename text,
+    apname text,
+    ap_id integer,
+    bssid text,
+    rssi integer
+);
+
+
+ALTER TABLE public.geofence_notify OWNER TO postgres;
+
+--
+-- Name: geofence_notify_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.geofence_notify_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.geofence_notify_id_seq OWNER TO postgres;
+
+--
+-- Name: geofence_notify_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.geofence_notify_id_seq OWNED BY public.geofence_notify.id;
+
+
+--
+-- Name: location; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.location (
+    id integer NOT NULL,
+    endpoint_id integer,
+    servertimestamp timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    aletimestamp timestamp with time zone,
+    campus_id integer,
+    building_id integer,
+    floor_id integer,
+    x real,
+    y real,
+    algorithm integer
+);
+
+
+ALTER TABLE public.location OWNER TO postgres;
+
+--
+-- Name: location_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.location_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.location_id_seq OWNER TO postgres;
+
+--
+-- Name: location_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.location_id_seq OWNED BY public.location.id;
+
+
+--
+-- Name: location_statistics; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.location_statistics (
+    id integer NOT NULL,
+    servertimestamp timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    starttime timestamp with time zone,
+    "interval" integer,
+    type integer,
+    location_id integer,
+    value integer
+);
+
+
+ALTER TABLE public.location_statistics OWNER TO postgres;
+
+--
+-- Name: location_statistics_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.location_statistics_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.location_statistics_id_seq OWNER TO postgres;
+
+--
+-- Name: location_statistics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.location_statistics_id_seq OWNED BY public.location_statistics.id;
+
+
+--
+-- Name: notification; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.notification (
+    id integer NOT NULL,
+    endpoint_id integer,
+    sentstatus integer,
+    message text,
+    notificationsenttime timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.notification OWNER TO postgres;
+
+--
+-- Name: notification_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.notification_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.notification_id_seq OWNER TO postgres;
+
+--
+-- Name: notification_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.notification_id_seq OWNED BY public.notification.id;
+
+
+--
+-- Name: person; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.person (
+    id integer NOT NULL,
+    userid text NOT NULL,
+    email text NOT NULL,
+    employeenumber integer,
+    firstname text,
+    lastname text,
+    displayname text,
+    company text,
+    department text,
+    title text,
+    mobile text,
+    country text,
+    language text,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.person OWNER TO postgres;
+
+--
+-- Name: person_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.person_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.person_id_seq OWNER TO postgres;
+
+--
+-- Name: person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.person_id_seq OWNED BY public.person.id;
+
+
+--
+-- Name: presence; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.presence (
+    id integer NOT NULL,
+    endpoint_id integer,
+    servertimestamp timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    aletimestamp timestamp with time zone,
+    isassociated boolean,
+    rssi integer,
+    ap_name text,
+    radio_id integer,
+    server_id integer
+);
+
+
+ALTER TABLE public.presence OWNER TO postgres;
+
+--
+-- Name: presence_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.presence_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.presence_id_seq OWNER TO postgres;
+
+--
+-- Name: presence_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.presence_id_seq OWNED BY public.presence.id;
+
+
+--
+-- Name: radio_bssid; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.radio_bssid (
+    id integer NOT NULL,
+    radio_bssid text NOT NULL,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    phytype integer,
+    ht integer,
+    mode integer,
+    ap_id integer
+);
+
+
+ALTER TABLE public.radio_bssid OWNER TO postgres;
+
+--
+-- Name: radio_bssid_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.radio_bssid_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.radio_bssid_id_seq OWNER TO postgres;
+
+--
+-- Name: radio_bssid_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.radio_bssid_id_seq OWNED BY public.radio_bssid.id;
+
+
+--
+-- Name: rssi; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.rssi (
+    id integer NOT NULL,
+    endpoint_id integer,
+    servertimestamp timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    aletimestamp timestamp with time zone,
+    radio_id integer,
+    rssi integer,
+    isassociated boolean,
+    age integer,
+    noise_floor integer,
+    assoc_bssid text
+);
+
+
+ALTER TABLE public.rssi OWNER TO postgres;
+
+--
+-- Name: rssi_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.rssi_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rssi_id_seq OWNER TO postgres;
+
+--
+-- Name: rssi_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.rssi_id_seq OWNED BY public.rssi.id;
+
+
+--
+-- Name: server; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.server (
+    id integer NOT NULL,
+    name text,
+    host text NOT NULL,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.server OWNER TO postgres;
+
+--
+-- Name: server_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.server_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.server_id_seq OWNER TO postgres;
+
+--
+-- Name: server_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.server_id_seq OWNED BY public.server.id;
+
+
+--
+-- Name: vap; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.vap (
+    id integer NOT NULL,
+    bssid text NOT NULL,
+    essid text,
+    radio_id integer,
+    lastmodifiedtime timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.vap OWNER TO postgres;
+
+--
+-- Name: vap_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.vap_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.vap_id_seq OWNER TO postgres;
+
+--
+-- Name: vap_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.vap_id_seq OWNED BY public.vap.id;
+
+
+--
+-- Name: ap id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ap ALTER COLUMN id SET DEFAULT nextval('public.ap_id_seq'::regclass);
+
+
+--
+-- Name: building id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.building ALTER COLUMN id SET DEFAULT nextval('public.building_id_seq'::regclass);
+
+
+--
+-- Name: campus id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.campus ALTER COLUMN id SET DEFAULT nextval('public.campus_id_seq'::regclass);
+
+
+--
+-- Name: endpoint id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.endpoint ALTER COLUMN id SET DEFAULT nextval('public.endpoint_id_seq'::regclass);
+
+
+--
+-- Name: endpoint_person id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.endpoint_person ALTER COLUMN id SET DEFAULT nextval('public.endpoint_person_id_seq'::regclass);
+
+
+--
+-- Name: floor id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.floor ALTER COLUMN id SET DEFAULT nextval('public.floor_id_seq'::regclass);
+
+
+--
+-- Name: geofence_notify id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.geofence_notify ALTER COLUMN id SET DEFAULT nextval('public.geofence_notify_id_seq'::regclass);
+
+
+--
+-- Name: location id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location ALTER COLUMN id SET DEFAULT nextval('public.location_id_seq'::regclass);
+
+
+--
+-- Name: location_statistics id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location_statistics ALTER COLUMN id SET DEFAULT nextval('public.location_statistics_id_seq'::regclass);
+
+
+--
+-- Name: notification id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notification ALTER COLUMN id SET DEFAULT nextval('public.notification_id_seq'::regclass);
+
+
+--
+-- Name: person id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.person ALTER COLUMN id SET DEFAULT nextval('public.person_id_seq'::regclass);
+
+
+--
+-- Name: presence id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.presence ALTER COLUMN id SET DEFAULT nextval('public.presence_id_seq'::regclass);
+
+
+--
+-- Name: radio_bssid id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.radio_bssid ALTER COLUMN id SET DEFAULT nextval('public.radio_bssid_id_seq'::regclass);
+
+
+--
+-- Name: rssi id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rssi ALTER COLUMN id SET DEFAULT nextval('public.rssi_id_seq'::regclass);
+
+
+--
+-- Name: server id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.server ALTER COLUMN id SET DEFAULT nextval('public.server_id_seq'::regclass);
+
+
+--
+-- Name: vap id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vap ALTER COLUMN id SET DEFAULT nextval('public.vap_id_seq'::regclass);
+
+
+--
+-- Data for Name: ap; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.ap (id, macaddress, lastmodifiedtime, ip, name, apgroup, model, mode, reboots, rebootstraps, server_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: building; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.building (id, name, idfromawms, campus_id, aletimestamp, lastmodifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: campus; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.campus (id, name, idfromawms, aletimestamp, lastmodifiedtime, server_id, timezone) FROM stdin;
+\.
+
+
+--
+-- Data for Name: endpoint; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.endpoint (id, macaddress, isassociated, lastmodifiedtime, lastheardtime, lastheardmessage, receivenotification, appinstalled, lastnotificationattempted, lastnotificationstatus, maxrssi, username, role, bssid, devtype, rtlstype, ip, maxdbm, lastchannel, lastnoisefloor, lastage, lastradiobssid, lastmonbssid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: endpoint_person; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.endpoint_person (id, endpoint_id, person_id, lastmodifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: floor; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.floor (id, name, idfromawms, latitude, longitude, img_path, img_width, img_length, building_id, level, units, grid_size, aletimestamp, lastmodifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: geofence_notify; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.geofence_notify (id, endpoint_id, servertimestamp, aletimestamp, geofencename, apname, ap_id, bssid, rssi) FROM stdin;
+\.
+
+
+--
+-- Data for Name: location; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.location (id, endpoint_id, servertimestamp, aletimestamp, campus_id, building_id, floor_id, x, y, algorithm) FROM stdin;
+\.
+
+
+--
+-- Data for Name: location_statistics; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.location_statistics (id, servertimestamp, starttime, "interval", type, location_id, value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: notification; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.notification (id, endpoint_id, sentstatus, message, notificationsenttime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.person (id, userid, email, employeenumber, firstname, lastname, displayname, company, department, title, mobile, country, language, lastmodifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: presence; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.presence (id, endpoint_id, servertimestamp, aletimestamp, isassociated, rssi, ap_name, radio_id, server_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: radio_bssid; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.radio_bssid (id, radio_bssid, lastmodifiedtime, phytype, ht, mode, ap_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: rssi; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.rssi (id, endpoint_id, servertimestamp, aletimestamp, radio_id, rssi, isassociated, age, noise_floor, assoc_bssid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: server; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.server (id, name, host, lastmodifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: vap; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.vap (id, bssid, essid, radio_id, lastmodifiedtime) FROM stdin;
+\.
+
+
+--
+-- Name: ap_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.ap_id_seq', 1, false);
+
+
+--
+-- Name: building_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.building_id_seq', 1, false);
+
+
+--
+-- Name: campus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.campus_id_seq', 1, false);
+
+
+--
+-- Name: endpoint_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.endpoint_id_seq', 1, false);
+
+
+--
+-- Name: endpoint_person_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.endpoint_person_id_seq', 1, false);
+
+
+--
+-- Name: floor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.floor_id_seq', 1, false);
+
+
+--
+-- Name: geofence_notify_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.geofence_notify_id_seq', 1, false);
+
+
+--
+-- Name: location_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.location_id_seq', 1, false);
+
+
+--
+-- Name: location_statistics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.location_statistics_id_seq', 1, false);
+
+
+--
+-- Name: notification_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.notification_id_seq', 1, false);
+
+
+--
+-- Name: person_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.person_id_seq', 1, false);
+
+
+--
+-- Name: presence_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.presence_id_seq', 1, false);
+
+
+--
+-- Name: radio_bssid_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.radio_bssid_id_seq', 1, false);
+
+
+--
+-- Name: rssi_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.rssi_id_seq', 1, false);
+
+
+--
+-- Name: server_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.server_id_seq', 1, false);
+
+
+--
+-- Name: vap_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.vap_id_seq', 1, false);
+
+
+--
+-- Name: ap ap_macaddress_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ap
+    ADD CONSTRAINT ap_macaddress_key UNIQUE (macaddress);
+
+
+--
+-- Name: ap ap_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ap
+    ADD CONSTRAINT ap_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: building building_idfromawms_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.building
+    ADD CONSTRAINT building_idfromawms_key UNIQUE (idfromawms);
+
+
+--
+-- Name: building building_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.building
+    ADD CONSTRAINT building_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: campus campus_idfromawms_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.campus
+    ADD CONSTRAINT campus_idfromawms_key UNIQUE (idfromawms);
+
+
+--
+-- Name: campus campus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.campus
+    ADD CONSTRAINT campus_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: endpoint endpoint_macaddress_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.endpoint
+    ADD CONSTRAINT endpoint_macaddress_key UNIQUE (macaddress);
+
+
+--
+-- Name: endpoint_person endpoint_person_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.endpoint_person
+    ADD CONSTRAINT endpoint_person_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: endpoint endpoint_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.endpoint
+    ADD CONSTRAINT endpoint_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: floor floor_idfromawms_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.floor
+    ADD CONSTRAINT floor_idfromawms_key UNIQUE (idfromawms);
+
+
+--
+-- Name: floor floor_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.floor
+    ADD CONSTRAINT floor_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: geofence_notify geofence_notify_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.geofence_notify
+    ADD CONSTRAINT geofence_notify_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: location location_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: location_statistics location_statistics_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location_statistics
+    ADD CONSTRAINT location_statistics_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notification
+    ADD CONSTRAINT notification_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: person person_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT person_email_key UNIQUE (email);
+
+
+--
+-- Name: person person_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT person_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: person person_userid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.person
+    ADD CONSTRAINT person_userid_key UNIQUE (userid);
+
+
+--
+-- Name: presence presence_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.presence
+    ADD CONSTRAINT presence_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: radio_bssid radio_bssid_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.radio_bssid
+    ADD CONSTRAINT radio_bssid_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: radio_bssid radio_bssid_radio_bssid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.radio_bssid
+    ADD CONSTRAINT radio_bssid_radio_bssid_key UNIQUE (radio_bssid);
+
+
+--
+-- Name: rssi rssi_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rssi
+    ADD CONSTRAINT rssi_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: server server_host_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.server
+    ADD CONSTRAINT server_host_key UNIQUE (host);
+
+
+--
+-- Name: server server_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.server
+    ADD CONSTRAINT server_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: vap vap_bssid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vap
+    ADD CONSTRAINT vap_bssid_key UNIQUE (bssid);
+
+
+--
+-- Name: vap vap_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vap
+    ADD CONSTRAINT vap_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ap_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX ap_idx ON public.ap USING btree (macaddress);
+
+
+--
+-- Name: building_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX building_idx ON public.building USING btree (idfromawms);
+
+
+--
+-- Name: campus_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX campus_idx ON public.campus USING btree (idfromawms);
+
+
+--
+-- Name: endpoint_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX endpoint_idx ON public.endpoint USING btree (macaddress);
+
+
+--
+-- Name: endpoint_person_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX endpoint_person_idx ON public.endpoint_person USING btree (endpoint_id);
+
+
+--
+-- Name: floor_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX floor_idx ON public.floor USING btree (idfromawms);
+
+
+--
+-- Name: geofence_notify_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX geofence_notify_idx ON public.geofence_notify USING btree (endpoint_id);
+
+
+--
+-- Name: location_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX location_idx ON public.location USING btree (endpoint_id);
+
+
+--
+-- Name: notification_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX notification_idx ON public.notification USING btree (endpoint_id);
+
+
+--
+-- Name: person_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX person_idx ON public.person USING btree (userid, email);
+
+
+--
+-- Name: presence_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX presence_idx ON public.presence USING btree (endpoint_id);
+
+
+--
+-- Name: radio_bssid_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX radio_bssid_idx ON public.radio_bssid USING btree (radio_bssid);
+
+
+--
+-- Name: rssi_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX rssi_idx ON public.rssi USING btree (endpoint_id);
+
+
+--
+-- Name: vap_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX vap_idx ON public.vap USING btree (bssid);
+
+
+--
+-- Name: ap ap_server_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ap
+    ADD CONSTRAINT ap_server_id_fkey FOREIGN KEY (server_id) REFERENCES public.server(id);
+
+
+--
+-- Name: building building_campus_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.building
+    ADD CONSTRAINT building_campus_id_fkey FOREIGN KEY (campus_id) REFERENCES public.campus(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: campus campus_server_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.campus
+    ADD CONSTRAINT campus_server_id_fkey FOREIGN KEY (server_id) REFERENCES public.server(id);
+
+
+--
+-- Name: endpoint_person endpoint_person_endpoint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.endpoint_person
+    ADD CONSTRAINT endpoint_person_endpoint_id_fkey FOREIGN KEY (endpoint_id) REFERENCES public.endpoint(id);
+
+
+--
+-- Name: endpoint_person endpoint_person_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.endpoint_person
+    ADD CONSTRAINT endpoint_person_person_id_fkey FOREIGN KEY (person_id) REFERENCES public.person(id);
+
+
+--
+-- Name: floor floor_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.floor
+    ADD CONSTRAINT floor_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: geofence_notify geofence_notify_ap_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.geofence_notify
+    ADD CONSTRAINT geofence_notify_ap_id_fkey FOREIGN KEY (ap_id) REFERENCES public.ap(id);
+
+
+--
+-- Name: geofence_notify geofence_notify_endpoint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.geofence_notify
+    ADD CONSTRAINT geofence_notify_endpoint_id_fkey FOREIGN KEY (endpoint_id) REFERENCES public.endpoint(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: location location_building_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_building_id_fkey FOREIGN KEY (building_id) REFERENCES public.building(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: location location_campus_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_campus_id_fkey FOREIGN KEY (campus_id) REFERENCES public.campus(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: location location_endpoint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_endpoint_id_fkey FOREIGN KEY (endpoint_id) REFERENCES public.endpoint(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: location location_floor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.location
+    ADD CONSTRAINT location_floor_id_fkey FOREIGN KEY (floor_id) REFERENCES public.floor(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: notification notification_endpoint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notification
+    ADD CONSTRAINT notification_endpoint_id_fkey FOREIGN KEY (endpoint_id) REFERENCES public.endpoint(id);
+
+
+--
+-- Name: presence presence_endpoint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.presence
+    ADD CONSTRAINT presence_endpoint_id_fkey FOREIGN KEY (endpoint_id) REFERENCES public.endpoint(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: presence presence_radio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.presence
+    ADD CONSTRAINT presence_radio_id_fkey FOREIGN KEY (radio_id) REFERENCES public.radio_bssid(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: presence presence_server_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.presence
+    ADD CONSTRAINT presence_server_id_fkey FOREIGN KEY (server_id) REFERENCES public.server(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: radio_bssid radio_bssid_ap_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.radio_bssid
+    ADD CONSTRAINT radio_bssid_ap_id_fkey FOREIGN KEY (ap_id) REFERENCES public.ap(id);
+
+
+--
+-- Name: rssi rssi_endpoint_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rssi
+    ADD CONSTRAINT rssi_endpoint_id_fkey FOREIGN KEY (endpoint_id) REFERENCES public.endpoint(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: rssi rssi_radio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rssi
+    ADD CONSTRAINT rssi_radio_id_fkey FOREIGN KEY (radio_id) REFERENCES public.radio_bssid(id) ON DELETE RESTRICT DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: vap vap_radio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.vap
+    ADD CONSTRAINT vap_radio_id_fkey FOREIGN KEY (radio_id) REFERENCES public.radio_bssid(id);
+
+
+--
+-- Name: TABLE ap; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,UPDATE ON TABLE public.ap TO loken1;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
